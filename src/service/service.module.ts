@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { SaleDetailEntity } from 'src/persistence/saleDetail.entity';
-import { SaleEntity } from 'src/persistence/sale.entity';
+import { SaleEntity } from 'src/persistence/entities/sale.entity';
 import { SaleService } from './sale/sale.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { SaleDetailEntity } from 'src/persistence/entities/saleDetail.entity';
 
 @Module({
     imports: [

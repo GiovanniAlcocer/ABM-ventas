@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { SaleEntity } from 'src/persistence/sale.entity';
-import { SaleDetailEntity } from 'src/persistence/saleDetail.entity';
+import { SaleEntity } from 'src/persistence/entities/sale.entity';
+import { SaleDetailEntity } from 'src/persistence/entities/saleDetail.entity';
+
 import { Repository } from 'typeorm';
 
 @Injectable()
