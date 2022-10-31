@@ -8,7 +8,7 @@ export const AppDataSource = new DataSource({
     username: process.env.DB_USER || 'postgres',
     password: process.env.DB_PASS || 'abm',
     database: process.env.DB_NAME || 'abm',
-    entities: [__dirname + '/persistence/*.entity{.ts,.js}'],
+    entities: [__dirname + '/persistence/entities/*.entity{.ts,.js}'],
     synchronize: true,
 })
 

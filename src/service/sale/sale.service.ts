@@ -26,25 +26,28 @@ export class SaleService {
     detalle.code = ''
     detalle.description =''
     detalle.quantity = 2
-    detalle.unitPrice = 2.2
+    detalle.unitPrice = 4
 
 
     venta.clientCi = '441'
     venta.clientCode = '446'
     venta.clientName = 'marcelo'
     venta.date = new Date()
+    console.log("hi");
     
     const queryRunner = AppDataSource.createQueryRunner()
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
       await queryRunner.manager.save(detalle);
-      venta.details.push(detalle)
+      venta.details = [detalle]
       await queryRunner.manager.save(venta);
   
       await queryRunner.commitTransaction();
     } catch (err) {
       // since we have errors lets rollback the changes we made
+      console.log(err);
+      
       await queryRunner.rollbackTransaction();
     } finally {
       // you need to release a queryRunner which was manually instantiated
