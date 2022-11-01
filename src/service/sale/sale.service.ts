@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SaleDto } from 'src/dto/sale.dto';
 import { SaleEntity } from 'src/persistence/entities/sale.entity';
@@ -9,57 +9,43 @@ import { Connection, getConnection, Repository } from 'typeorm';
 @Injectable()
 export class SaleService {
   constructor(
-    /* @InjectRepository(SaleEntity, 'postgres')
-    private saleRepository: Repository<SaleEntity>,
-    @InjectRepository(SaleDetailEntity, 'postgres')
-    private detailRepository: Repository<SaleEntity>, */
 
   ) { }
 
   async saveSale(saleDto: SaleDto) {
+    let newDetails: Array<SaleDetailEntity> = new Array<SaleDetailEntity>
+    let newSale: SaleEntity = new SaleEntity()
 
+    newSale.clientCi = saleDto.clientCi;
+    newSale.clientCode = saleDto.clientCode;
+    newSale.clientName = saleDto.clientName;
+    newSale.date = new Date();
 
-    const { details, ...sale } = saleDto;
-    const detalle: SaleDetailEntity = new SaleDetailEntity()
-    const venta: SaleEntity = new SaleEntity()
-
-    detalle.code = ''
-    detalle.description =''
-    detalle.quantity = 2
-    detalle.unitPrice = 4
-
-
-    venta.clientCi = '441'
-    venta.clientCode = '446'
-    venta.clientName = 'marcelo'
-    venta.date = new Date()
-    console.log("hi");
-    
     const queryRunner = AppDataSource.createQueryRunner()
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      await queryRunner.manager.save(detalle);
-      venta.details = [detalle]
-      await queryRunner.manager.save(venta);
-  
+      await queryRunner.manager.save(newSale).then( () => {
+        newDetails = saleDto.details.map(detail => {
+          let saleDetail = new SaleDetailEntity()
+          saleDetail.code = detail.code;
+          saleDetail.description = detail.description;
+          saleDetail.quantity = detail.quantity;
+          saleDetail.unitPrice = detail.unitPrice;
+          saleDetail.sale = newSale
+          return saleDetail;
+          });
+        }
+      );
+      await queryRunner.manager.save(newDetails);
       await queryRunner.commitTransaction();
     } catch (err) {
-      // since we have errors lets rollback the changes we made
       console.log(err);
-      
       await queryRunner.rollbackTransaction();
+      throw new HttpException("Hubo un problema", HttpStatus.INTERNAL_SERVER_ERROR)
     } finally {
-      // you need to release a queryRunner which was manually instantiated
       await queryRunner.release();
     }
 
-    console.log('details we:', details);
-    console.log('sale info we:', sale);
-
-  }
-
-  async getAllSales() {
-    return ''/* this.saleRepository.find(); */
   }
 }

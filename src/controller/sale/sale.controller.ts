@@ -14,9 +14,5 @@ export class SaleController {
         return this.saleService.saveSale(saleData)
     }
 
-    @Get()
-    getAllSales(){
-        //return AppDataSource.manager
-        /* return this.saleService.getAllSales(); */
-    }
+
 }

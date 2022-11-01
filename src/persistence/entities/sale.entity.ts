@@ -6,16 +6,16 @@ export class SaleEntity {
     @PrimaryGeneratedColumn('uuid', { name: 'sale_id' })
     id: string;
 
-    @Column()
+    @Column({name: 'client_name'})
     clientName: string
 
-    @Column()
+    @Column({name: 'client_code'})
     clientCode: string
 
     @Column()
     date: Date
 
-    @Column()
+    @Column({name: 'client_ci'})
     clientCi: string
 
     @OneToMany(() => SaleDetailEntity, (detail) => detail.sale)
