@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post } from '@nestjs/common';
 import { SaleDto } from 'src/dto/sale.dto';
 import { SaleService } from 'src/service/sale/sale.service';
 import { DetailIdDto } from '../../dto/detailId.dto';
@@ -28,11 +28,11 @@ export class SaleController {
   updateDetail(@Body() detailData: DetailIdDto) {
     return this.saleService.updateDetail(detailData);
   }
-  @Post('deleteDetail')
+  @Delete('deleteDetail')
   deleteDetail(@Body() id: IdDetailDto) {
     return this.saleService.deleteDetail(id);
   }
-  @Post('deleteSale')
+  @Delete('deleteSale')
   deleteSale(@Body() id: IdDetailDto) {
     return this.saleService.deleteSale(id);
   }
