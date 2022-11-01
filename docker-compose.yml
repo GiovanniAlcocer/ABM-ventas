@@ -24,9 +24,9 @@ services:
       - interdb
 networks:
   default:
-    name: mytunes_default
+    name: abm_default
     driver: bridge
   interdb:
-    name: mytunes_interdb
+    name: abm_interdb
     driver: bridge
 
