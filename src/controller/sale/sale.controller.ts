@@ -16,6 +16,10 @@ export class SaleController {
   public async getAllSales() {
     return await this.saleService.getAllSales();
   }
+  @Get('detailBySale')
+  public async getDetailsBySale(@Body() saleData: IdDetailDto) {
+    return await this.saleService.getDetailsBySale(saleData);
+  }
   @Get('detail')
   public async getAllDetails() {
     return await this.saleService.getAllDetails();
@@ -27,6 +31,10 @@ export class SaleController {
   @Post('detailUpdate')
   updateDetail(@Body() detailData: DetailIdDto) {
     return this.saleService.updateDetail(detailData);
+  }
+  @Post('detailUpdate2')
+  updateDetail2(@Body() detailData: DetailIdDto) {
+    return this.saleService.updateDetail2(detailData);
   }
   @Delete('deleteDetail')
   deleteDetail(@Body() id: IdDetailDto) {

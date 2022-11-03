@@ -25,6 +25,22 @@ export class SaleService {
     return result;
   }
 
+  public async getDetailsBySale(saleId: IdDetailDto) {
+    const sale = await this.saleRepository.findOneBy({
+      id: saleId.id,
+    });
+    const detailsOfSale = await this.detailRepository.findBy({ sale });
+    console.log('sale', sale);
+    console.log('details', detailsOfSale);
+    const sale2 = await this.saleRepository
+      .createQueryBuilder('sale')
+      .leftJoinAndSelect('sale.details', 'detail')
+      .where('sale.id = :id', { id: saleId.id })
+      .getOne();
+    console.log('sale2', sale2);
+    return sale2;
+  }
+
   public async getAllDetails() {
     const result = await this.detailRepository.find();
     console.log(result);
@@ -97,8 +113,11 @@ export class SaleService {
     } catch (err) {
       // since we have errors lets rollback the changes we made
       console.log(err);
-
       await queryRunner.rollbackTransaction();
+      throw new HttpException(
+        'Hubo un problema',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     } finally {
       // you need to release a queryRunner which was manually instantiated
       await queryRunner.release();
@@ -126,11 +145,37 @@ export class SaleService {
     } catch (err) {
       // since we have errors lets rollback the changes we made
       console.log(err);
+      await queryRunner.rollbackTransaction();
+      throw new HttpException(
+        'Hubo un problema',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
 
       await queryRunner.rollbackTransaction();
     } finally {
       // you need to release a queryRunner which was manually instantiated
       await queryRunner.release();
     }
+  }
+
+  public async updateDetail2(detailDto: DetailIdDto) {
+    const detailData: SaleDetailEntity = new SaleDetailEntity();
+
+    detailData.id = detailDto.id;
+    detailData.code = detailDto.code;
+    detailData.quantity = detailDto.quantity;
+    detailData.description = detailDto.description;
+    detailData.unitPrice = detailDto.unitPrice;
+
+    console.log(detailData);
+    const queryRunner = AppDataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.manager.transaction(
+      async (transactionalEntityManager) => {
+        await transactionalEntityManager
+          .getRepository(SaleDetailEntity)
+          .save(detailData);
+      },
+    );
   }
 }
