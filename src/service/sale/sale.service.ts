@@ -21,29 +21,24 @@ export class SaleService {
 
   public async getAllSales() {
     const result = await this.saleRepository.find();
-    console.log(result);
     return result;
   }
 
-  public async getDetailsBySale(saleId: IdDetailDto) {
+  public async getDetailsBySale(saleId: string) {
     const sale = await this.saleRepository.findOneBy({
-      id: saleId.id,
+      id: saleId,
     });
     const detailsOfSale = await this.detailRepository.findBy({ sale });
-    console.log('sale', sale);
-    console.log('details', detailsOfSale);
-    const sale2 = await this.saleRepository
+    /* const sale2 = await this.saleRepository
       .createQueryBuilder('sale')
       .leftJoinAndSelect('sale.details', 'detail')
-      .where('sale.id = :id', { id: saleId.id })
-      .getOne();
-    console.log('sale2', sale2);
-    return sale2;
+      .where('sale.id = :id', { id: saleId })
+      .getOne(); */
+    return detailsOfSale;
   }
 
   public async getAllDetails() {
     const result = await this.detailRepository.find();
-    console.log(result);
     return result;
   }
 
