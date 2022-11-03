@@ -7,7 +7,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SaleIdDto } from '../../dto/saleId.dto';
 import { DetailIdDto } from '../../dto/detailId.dto';
-import { IdDetailDto } from '../../dto/idDetail.dto';
 
 @Injectable()
 export class SaleService {
@@ -42,13 +41,13 @@ export class SaleService {
     return result;
   }
 
-  public async deleteDetail(id: IdDetailDto) {
-    const result = await this.detailRepository.delete({ id: id.id });
+  public async deleteDetail(id: string) {
+    const result = await this.detailRepository.delete({ id: id });
     return result;
   }
 
-  public async deleteSale(id: IdDetailDto) {
-    const result = await this.saleRepository.delete({ id: id.id });
+  public async deleteSale(id: string) {
+    const result = await this.saleRepository.delete({ id: id });
     return result;
   }
 
