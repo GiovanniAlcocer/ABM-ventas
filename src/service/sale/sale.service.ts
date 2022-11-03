@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SaleIdDto } from '../../dto/saleId.dto';
 import { DetailIdDto } from '../../dto/detailId.dto';
+import { PageDto } from '../../dto/page.dto';
 
 @Injectable()
 export class SaleService {
@@ -16,7 +17,25 @@ export class SaleService {
     private saleRepository: Repository<SaleEntity>,
     @InjectRepository(SaleDetailEntity, 'postgres')
     private detailRepository: Repository<SaleDetailEntity>,
-  ) {}
+  ) { }
+
+  public async getSaleCount() {
+    return this.saleRepository.createQueryBuilder('sale').getCount();
+  }
+
+  public async getAllPaginated(settings: PageDto) {
+
+    const name = settings.name
+    const queryBuilder = this.saleRepository.createQueryBuilder('sale');
+    queryBuilder
+      .leftJoinAndSelect('sale.details', 'detail')
+      .where('sale.client_name LIKE :name', { name })
+      .orderBy('sale.clientName', 'ASC')
+      .skip(settings.take * (settings.page - 1))
+      .take(settings.take)
+    const { entities } = await queryBuilder.getRawAndEntities();
+    return entities;
+  }
 
   public async getAllSales() {
     const result = await this.saleRepository.find();
