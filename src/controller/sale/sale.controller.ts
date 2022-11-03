@@ -26,6 +26,11 @@ export class SaleController {
     return await this.saleService.getAllSales();
   }
 
+  @Get('page')
+  public async getAllPaginated() {
+    return await this.saleService.getAllPaginated();
+  }
+
   @Get('details')
   public async getAllDetails() {
     return await this.saleService.getAllDetails();
@@ -36,12 +41,12 @@ export class SaleController {
     return await this.saleService.getDetailsBySale(id);
   }
 
-  @Put('update')
+  @Put()
   updateSale(@Body() saleData: SaleIdDto) {
     return this.saleService.updateSale(saleData);
   }
 
-  @Put('detail/update')
+  @Put('detail')
   updateDetail(@Body() detailData: DetailIdDto) {
     return this.saleService.updateDetail(detailData);
   }
