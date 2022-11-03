@@ -32,17 +32,12 @@ export class SaleController {
   public async getAllPaginated(@Query() query) {
     const totalSales = await this.saleService.getSaleCount();
     const pageOptions: PageDto = new PageDto();
-
-    pageOptions.page = +query.pageNumber; //param
-    pageOptions.take = +query.itemsPerPage; //param
-    pageOptions.itemCount = +totalSales; //new service to gfet item count from db
-    pageOptions.pageCount = +totalSales / query.itemsPerPage; // itemcount/take
+    pageOptions.page = +query.pageNumber; 
+    pageOptions.take = +query.itemsPerPage; 
+    pageOptions.itemCount = +totalSales;
+    pageOptions.pageCount = +totalSales / query.itemsPerPage;
     pageOptions.name = query.value;
     console.log("query param",pageOptions);
-    
-    /* pageOptions.hasNextPage = true; //ignore?
-    pageOptions.hasPreviousPage = false; //ignore? */
-   /*  pageOptions.selectByDate = '15 nov 2022'; //param */
     return await this.saleService.getAllPaginated(pageOptions);
   }
 

@@ -27,20 +27,13 @@ export class SaleService {
 
     const name = settings.name
     const queryBuilder = this.saleRepository.createQueryBuilder('sale');
-
-    console.log("setings", settings);
-
     queryBuilder
-      .where('sale.client_name LIKE :name', { name })
       .leftJoinAndSelect('sale.details', 'detail')
-      .orderBy('sale.client_name', 'ASC')
+      .where('sale.client_name LIKE :name', { name })
+      .orderBy('sale.clientName', 'ASC')
       .skip(settings.take * (settings.page - 1))
       .take(settings.take)
-
-
     const { entities } = await queryBuilder.getRawAndEntities();
-    console.log(entities[0]);
-    
     return entities;
   }
 
