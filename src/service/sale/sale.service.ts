@@ -17,27 +17,30 @@ export class SaleService {
     private saleRepository: Repository<SaleEntity>,
     @InjectRepository(SaleDetailEntity, 'postgres')
     private detailRepository: Repository<SaleDetailEntity>,
-  ) {}
+  ) { }
 
-  public async getAllPaginated() {
-    const pageOptions: PageDto = new PageDto();
-    pageOptions.page = 3;
-    pageOptions.take = 6;
-    pageOptions.itemCount = 8;
-    pageOptions.pageCount = 2;
-    pageOptions.hasNextPage = true;
-    pageOptions.hasPreviousPage = false;
-    pageOptions.selectByDate = '15 nov 2022';
+  public async getSaleCount() {
+    return this.saleRepository.createQueryBuilder('sale').getCount();
+  }
 
-    const queryBuilder = await this.saleRepository.createQueryBuilder('sale');
-    const name = 'Ariel';
+  public async getAllPaginated(settings: PageDto) {
+
+    const name = settings.name
+    const queryBuilder = this.saleRepository.createQueryBuilder('sale');
+
+    console.log("setings", settings);
+
     queryBuilder
-      .where('client_name LIKE :name', { name })
-      .orderBy('sale.date', 'ASC')
-      .skip(0)
-      .take(pageOptions.take);
+      .where('sale.client_name LIKE :name', { name })
+      .leftJoinAndSelect('sale.details', 'detail')
+      .orderBy('sale.client_name', 'ASC')
+      .skip(settings.take * (settings.page - 1))
+      .take(settings.take)
+
+
     const { entities } = await queryBuilder.getRawAndEntities();
-    console.log(entities);
+    console.log(entities[0]);
+    
     return entities;
   }
 

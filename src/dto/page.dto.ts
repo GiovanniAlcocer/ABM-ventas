@@ -3,7 +3,5 @@ export class PageDto {
   take: number;
   itemCount: number;
   pageCount: number;
-  hasPreviousPage: boolean;
-  hasNextPage: boolean;
-  selectByDate: string;
+  name: string;
 }

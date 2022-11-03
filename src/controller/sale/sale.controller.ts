@@ -7,7 +7,9 @@ import {
   ParseUUIDPipe,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
+import { PageDto } from 'src/dto/page.dto';
 import { SaleDto } from 'src/dto/sale.dto';
 import { SaleService } from 'src/service/sale/sale.service';
 import { DetailIdDto } from '../../dto/detailId.dto';
@@ -27,8 +29,21 @@ export class SaleController {
   }
 
   @Get('page')
-  public async getAllPaginated() {
-    return await this.saleService.getAllPaginated();
+  public async getAllPaginated(@Query() query) {
+    const totalSales = await this.saleService.getSaleCount();
+    const pageOptions: PageDto = new PageDto();
+
+    pageOptions.page = +query.pageNumber; //param
+    pageOptions.take = +query.itemsPerPage; //param
+    pageOptions.itemCount = +totalSales; //new service to gfet item count from db
+    pageOptions.pageCount = +totalSales / query.itemsPerPage; // itemcount/take
+    pageOptions.name = query.value;
+    console.log("query param",pageOptions);
+    
+    /* pageOptions.hasNextPage = true; //ignore?
+    pageOptions.hasPreviousPage = false; //ignore? */
+   /*  pageOptions.selectByDate = '15 nov 2022'; //param */
+    return await this.saleService.getAllPaginated(pageOptions);
   }
 
   @Get('details')
