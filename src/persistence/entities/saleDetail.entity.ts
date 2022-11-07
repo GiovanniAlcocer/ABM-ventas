@@ -28,6 +28,6 @@ export class SaleDetailEntity {
     onDelete: 'CASCADE',
     orphanedRowAction: 'delete',
   })
-  @JoinColumn({name: "sale_id"})
+  @JoinColumn({ name: 'sale_id' })
   sale: SaleEntity;
 }
